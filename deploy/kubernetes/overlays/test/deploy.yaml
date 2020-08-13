@@ -1,0 +1,14 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: go-gen
+spec:
+  template:
+    spec:
+      containers:
+      - name: go-gen
+        env:
+        - name: PROJECT_ENV
+          value: "test"
+        - name: MYSQL_DBNAME
+          value: "go-gen-test" 

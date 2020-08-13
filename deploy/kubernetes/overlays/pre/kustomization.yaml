@@ -1,0 +1,7 @@
+namespace: pre-mblock
+
+bases:
+- ../../base
+
+patchesStrategicMerge:
+- deploy.yaml

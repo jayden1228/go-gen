@@ -1,0 +1,7 @@
+namespace: test-mblock
+
+bases:
+- ../../base
+
+patchesStrategicMerge:
+- deploy.yaml

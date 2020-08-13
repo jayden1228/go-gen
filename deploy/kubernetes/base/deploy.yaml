@@ -1,0 +1,121 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: go-gen
+  labels:
+    app: go-gen
+    version: v1
+spec:
+  minReadySeconds: 1
+  selector:
+    matchLabels:
+      app: go-gen
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: go-gen
+        version: v1
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: docker-secret
+      containers:
+      - imagePullPolicy: Always
+        name: go-gen
+        image: go-gen
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: host
+        - name: MYSQL_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: port
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: user
+        - name: MYSQL_PWD
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: pwd
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: redis-configmap
+              key: host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: redis-configmap
+              key: port
+        - name: REDIS_PWD
+          valueFrom:
+            configMapKeyRef:
+              name: redis-configmap
+              key: pwd        
+        resources:
+          requests:
+            cpu: 20m
+            memory: 50Mi
+          limits:
+            cpu: 200m
+            memory: 500Mi
+        ports:
+        - containerPort: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: go-gen
+spec:
+  host: go-gen
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: go-gen
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    name: go-gen
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 90
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-gen
+  labels:
+    app: go-gen
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: go-gen

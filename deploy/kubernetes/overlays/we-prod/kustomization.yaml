@@ -1,0 +1,7 @@
+namespace: prod-mblock
+
+bases:
+- ../../base
+
+patchesStrategicMerge:
+- deploy.yaml
