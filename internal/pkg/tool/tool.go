@@ -1,82 +1,105 @@
 package tool
 
 import (
-	"errors"
-	"io"
-	"os"
+	"bytes"
+	"fmt"
+	"os/exec"
+	"regexp"
 	"strings"
+
+	"github.com/gogf/gf/os/gfile"
 )
 
-// 写文件
-func WriteFile(filename string, data string) (count int, err error) {
-	var f *os.File
-	if IsDirOrFileExist(filename) == false {
-		f, err = os.Create(filename)
-		if err != nil {
-			return
-		}
-	} else {
-		f, err = os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0666)
+//检查某字符是否存在文件里
+func CheckFileContainsChar(filename, s string) bool {
+	data := gfile.GetContents(filename)
+	if len(data) > 0 {
+		return strings.LastIndex(data, s) > 0
 	}
-	defer f.Close()
-	count, err = io.WriteString(f, data)
-	if err != nil {
-		return
-	}
-	return
+	return false
 }
 
-// 判断路径是否存在
-func IsDirOrFileExist(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil || os.IsExist(err)
+//拼接特殊字符串
+func FormatField(field string, formats []string) string {
+	if len(formats) == 0 {
+		return ""
+	}
+	buf := bytes.Buffer{}
+	for key := range formats {
+		buf.WriteString(fmt.Sprintf(`%s:"%s" `, formats[key], field))
+	}
+	return "`" + strings.TrimRight(buf.String(), " ") + "`"
 }
 
-//生成目录,不存在则创建,存在则加/
-func GenerateDir(path string) (string, error) {
-	if len(path) == 0 {
-		return "", errors.New("directory is null")
+//添加注释 //
+func AddToComment(s string, suff string) string {
+	if strings.EqualFold(s, "") {
+		return ""
 	}
-	last := path[len(path)-1:]
-	if !strings.EqualFold(last, string(os.PathSeparator)) {
-		path = path + string(os.PathSeparator)
-	}
-	if !IsDir(path) {
-		if CreateDir(path) == nil {
-			return path, nil
-		}
-		return "", errors.New(path + "Failed to create or insufficient permissions")
-	}
-	return path, nil
+	return "// " + s + suff
 }
 
-//创建目录
-func CreateDir(path string) error {
-	if IsDirOrFileExist(path) == false {
-		err := os.MkdirAll(path, os.ModePerm)
-		if err != nil {
-			return err
+//判断是否包存在某字符
+func InArrayString(str string, arr []string) bool {
+	for _, val := range arr {
+		if val == str {
+			return true
 		}
 	}
-
-	return nil
+	return false
 }
 
-// 判断给定文件名是否是一个目录
-// 如果文件名存在并且为目录则返回 true。如果 filename 是一个相对路径，则按照当前工作目录检查其相对路径。
-func IsDir(filename string) bool {
-	return IsFileOrDir(filename, true)
+//检查字符串,去掉特殊字符
+func CheckCharDoSpecial(s string, char byte, regs string) string {
+	reg := regexp.MustCompile(regs)
+	var result []string
+	if arr := reg.FindAllString(s, -1); len(arr) > 0 {
+		buf := bytes.Buffer{}
+		for key, val := range arr {
+			if val != string(char) {
+				buf.WriteString(val)
+			}
+			if val == string(char) && buf.Len() > 0 {
+				result = append(result, buf.String())
+				buf.Reset()
+			}
+			//处理最后一批数据
+			if buf.Len() > 0 && key == len(arr)-1 {
+				result = append(result, buf.String())
+			}
+		}
+	}
+	return strings.Join(result, string(char))
+}
+func CheckCharDoSpecialArr(s string, char byte, reg string) []string {
+	s = CheckCharDoSpecial(s, char, reg)
+	return strings.Split(s, string(char))
 }
 
-// 判断是文件还是目录，根据decideDir为true表示判断是否为目录；否则判断是否为文件
-func IsFileOrDir(filename string, decideDir bool) bool {
-	fileInfo, err := os.Stat(filename)
+// 添加``符号
+func AddQuote(str string) string {
+	return "`" + str + "`"
+}
+
+// 去掉 `符号
+func CleanQuote(str string) string {
+	return strings.Replace(str, "`", "", -1)
+}
+
+func Gofmt(path string) bool {
+	if !ExecCommand("goimports", "-l", "-w", path) {
+		if !ExecCommand("gofmt", "-l", "-w", path) {
+			return ExecCommand("go", "fmt", path)
+		}
+	}
+	return true
+}
+
+func ExecCommand(name string, args ...string) bool {
+	cmd := exec.Command(name, args...)
+	_, err := cmd.Output()
 	if err != nil {
 		return false
 	}
-	isDir := fileInfo.IsDir()
-	if decideDir {
-		return isDir
-	}
-	return !isDir
+	return true
 }

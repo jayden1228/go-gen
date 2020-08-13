@@ -1,16 +1,12 @@
 package service
 
 import (
+	"go-gen/internal/pkg/database"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
-func Test_GenerateDBEntity(t *testing.T) {
-
-	e := EntityReq{
-		EntityPkg: "damn",
-	}
-
-	assert.Nil(t, GenerateDBEntity(&e))
+func TestCreateDBEntity(t *testing.T) {
+	format := []string{"json", "gorm"}
+	database.SetUp()
+	CreateDBEntity(format)
 }

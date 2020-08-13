@@ -61,20 +61,24 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="Test_GenerateDBEntity in go-gen/internal/service" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestCreateDBEntity in go-gen/internal/service" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-gen" />
       <working_directory value="$PROJECT_DIR$/internal/service" />
+      <envs>
+        <env name="MYSQL_HOST" value="127.0.0.1" />
+        <env name="MYSQL_PWD" value="123" />
+      </envs>
       <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="go-gen/internal/service" />
       <directory value="$PROJECT_DIR$/" />
       <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^Test_GenerateDBEntity$" />
+      <pattern value="^TestCreateDBEntity$" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.Test_GenerateDBEntity in go-gen/internal/service" />
+        <item itemvalue="Go Test.TestCreateDBEntity in go-gen/internal/service" />
       </list>
     </recent_temporary>
   </component>
@@ -101,8 +105,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/service/entity.go</url>
-          <line>53</line>
-          <option name="timeStamp" value="1" />
+          <line>89</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/service/entity.go</url>
+          <line>72</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/service/entity.go</url>
+          <line>123</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
