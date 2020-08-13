@@ -96,11 +96,11 @@ func GenerateDBEntity(req *EntityReq) error {
 
 	// 声明表结构变量
 	TableData := new(TableInfo)
-	TableData.Table = strings.ToUpper(req.TableName)
+	TableData.Table = gstr.CamelCase(req.TableName)
 	TableData.NullTable = DbNullPrefix + TableData.Table
 	TableData.TableComment = tool.AddToComment(req.TableComment, "")
 
-	check = fmt.Sprintf("type %s struct", strings.ToUpper(req.TableName))
+	check = fmt.Sprintf("type %s struct", gstr.ToUpper(req.TableName))
 	if tool.CheckFileContainsChar(req.EntityPath, check) {
 		return errors.New("it already exists. Please delete it and regenerate it")
 	}

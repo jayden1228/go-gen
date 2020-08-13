@@ -3,7 +3,8 @@ package service
 import (
 	. "go-gen/internal/constant"
 	"go-gen/internal/pkg/database"
-	"strings"
+
+	"github.com/gogf/gf/text/gstr"
 )
 
 // TableDesc 表结构详情
@@ -62,8 +63,8 @@ func GenCustomTableDesc(tableName string) ([]*CustomTableDesc, error) {
 		}
 		customTableDesc = append(customTableDesc, &CustomTableDesc{
 			Index:            i,
-			GoColumnName:     strings.Title(row.ColumnName),
-			UpperMysqlType:   strings.ToUpper(row.OriMysqlType),
+			GoColumnName:     gstr.CamelCase(row.ColumnName),
+			UpperMysqlType:   gstr.ToUpper(row.OriMysqlType),
 			GolangType:       MysqlTypeToGoType[row.OriMysqlType],
 			MysqlNullType:    MysqlTypeToGoNullType[row.OriMysqlType],
 			PrimaryKey:       isPrimaryKey,

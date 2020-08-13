@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.4.1
+	github.com/a-urth/go-bindata v0.0.0-20180209162145-df38da164efc // indirect
 	github.com/alicebob/miniredis/v2 v2.13.0
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
