@@ -21,13 +21,13 @@ type TableDesc struct {
 // CustomTableDesc 自定义表结构详情
 
 type CustomTableDesc struct {
-	Index            int
-	ColumnName       string // 数据库原始字段
-	GoColumnName     string // go使用的字段名称
-	OriMysqlType     string // 数据库原始类型
-	UpperMysqlType   string // 转换大写的类型
-	GolangType       string // 转换成golang类型
-	MysqlNullType    string // MYSQL对应的空类型
+	Index          int
+	ColumnName     string // 数据库原始字段
+	GoColumnName   string // go使用的字段名称
+	OriMysqlType   string // 数据库原始类型
+	UpperMysqlType string // 转换大写的类型
+	GolangType     string // 转换成golang类型
+	//MysqlNullType    string // MYSQL对应的空类型
 	PrimaryKey       bool   // 是否是主键
 	IsNull           string // 是否为空
 	DefaultValue     string // 默认值
@@ -62,11 +62,11 @@ func GenCustomTableDesc(tableName string) ([]*CustomTableDesc, error) {
 			isPrimaryKey = true
 		}
 		customTableDesc = append(customTableDesc, &CustomTableDesc{
-			Index:            i,
-			GoColumnName:     gstr.CamelCase(row.ColumnName),
-			UpperMysqlType:   gstr.ToUpper(row.OriMysqlType),
-			GolangType:       MysqlTypeToGoType[row.OriMysqlType],
-			MysqlNullType:    MysqlTypeToGoNullType[row.OriMysqlType],
+			Index:          i,
+			GoColumnName:   gstr.CamelCase(row.ColumnName),
+			UpperMysqlType: gstr.ToUpper(row.OriMysqlType),
+			GolangType:     MysqlTypeToGoType[row.OriMysqlType],
+			//MysqlNullType:    MysqlTypeToGoNullType[row.OriMysqlType],
 			PrimaryKey:       isPrimaryKey,
 			ColumnName:       row.ColumnName,
 			OriMysqlType:     row.OriMysqlType,

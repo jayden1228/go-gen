@@ -18,14 +18,10 @@ const (
 )
 
 const (
-	TPL_CURD      = "assets/tpl/curd.tpl"      // 生成CRUD2模板
-	TPL_STRUCTURE = "assets/tpl/structure.tpl" // 结构体模板
-	TPL_ENTITY    = "assets/tpl/entity.tpl"    // 结构实体模板
-	TPL_TABLES    = "assets/tpl/tables.tpl"    // 表结构模板
-	TPL_INIT      = "assets/tpl/init.tpl"      // init模板
-	TPL_MARKDOWN  = "assets/tpl/markdown.tpl"  // markdown模板
-	TPL_EXAMPLE   = "assets/tpl/example.tpl"   // example模板
-	TPL_Error     = "assets/tpl/e.tpl"         // error模板
+	TPL_CURD     = "assets/tpl/curd.tpl"     // 生成CRUD模板
+	TPL_EROR     = "assets/tpl/error.tpl"    // 生成数据库错误模版
+	TPL_MARKDOWN = "assets/tpl/markdown.tpl" // markdown模板
+
 )
 
 const (
@@ -111,6 +107,12 @@ var MysqlTypeToGoNullType = map[string]string{
 
 var EntityHeader = `package %s
 import (
-	"database/sql"
-	"github.com/go-sql-driver/mysql"
-)`
+	"errors"
+	gdb "%s/internal/pkg/database"
+
+	"github.com/jinzhu/copier"
+)
+`
+var DbErrFileName = "error.go"
+var EntityDir = "model"
+var EntityPackageName = "model"

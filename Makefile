@@ -17,6 +17,10 @@ utest:
 	go test -coverpkg=./... -coverprofile=coverage.data ./...;
 lint:
 	golangci-lint run -c .golangci.yml;
+asset:
+	go-bindata -pkg tool assets/...;
+	rm internal/pkg/tool/bindata.go | echo "no bindata.go";
+	mv bindata.go internal/pkg/tool/bindata.go;
 build:
 	go mod tidy; \
 	cd deploy/docker;  \
