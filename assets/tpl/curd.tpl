@@ -1,7 +1,6 @@
 package {{.PackageName}}
 import (
-	"errors"
-	gdb "{{.ProjectModule}}/internal/pkg/database"
+	gdb "{{.ProjectModule}}/pkg/database/mysql"
 
 	"github.com/jinzhu/copier"
 )
@@ -32,7 +31,7 @@ func Delete{{.StructName}}({{range $item := .Fields}} {{ if $item.PrimaryKey }} 
         return -1, ErrNotFound
     }
 
-    db = gdb.GetDB().Delete(record)
+    db := gdb.GetDB().Delete(record)
     if err = db.Error; err != nil {
         return -1, ErrDeleteFailed
     }
@@ -54,7 +53,7 @@ func Update{{.StructName}}({{range $item := .Fields}} {{ if $item.PrimaryKey }} 
       return nil, -1, ErrUpdateFailed
    }
 
-   db = gdb.GetDB().Save(result)
+   db := gdb.GetDB().Save(result)
    if err = db.Error; err != nil  {
       return nil, -1, ErrUpdateFailed
    }
